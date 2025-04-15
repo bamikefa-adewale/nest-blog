@@ -1,0 +1,20 @@
+POST http://localhost:3040/posts
+Content-Type : application/json
+{
+  "title": "what new with Nestjs",
+  "postType": "post",
+  "slug": "new-with-nestjs",
+  "status": "draft",
+  "content": "test content",
+  "schema": "{\"@context\":\"https://schema.org\",\"@type\":\"Person\"}",
+  "featureImageURL": "https://res.cloudinary.com/dbrub0d6r/image/upload/v1741095574/farhad-ibrahimzade-Rhhwb3EWvfo-unsplash_1_dvp9jh.jpg",
+  "publishOn": "2025-04-13T09:00:00+01:00",
+  "tags": ["nestjs", "typescript"],
+  "metaOptions": [
+    {
+      "key": "testkey",
+      "value": 20
+    }
+  ]
+}
+
