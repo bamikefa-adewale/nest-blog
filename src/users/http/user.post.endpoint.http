@@ -1,11 +1,13 @@
-PATCH http://localhost:3040/users
+POST http://localhost:3040/users
 Content-Type: application/json
 
 
 {
-  // "firstName": "john",
-  // "lastName": "adewale",   
-  "age": 20,
-  "email": "ade33333@gmail.com",    
-  "password": "Pasdf1234$"        
+  "firstName": "Chinedu",
+  "lastName": "Okafor",
+  "age": 25,
+  "email": "oka@gmail.com",
+  "password": "SecurePass456@"
 }
+
+

@@ -1,0 +1,13 @@
+PATCH http://localhost:3040/users
+Content-Type: application/json
+
+
+// {
+//   "firstName": "abimbola",
+//   "lastName": "adewale",
+//   "age": 20,
+//   "email": "ojo@email.com",
+//   "password": "LongPassw123$"      
+// }
+     
+

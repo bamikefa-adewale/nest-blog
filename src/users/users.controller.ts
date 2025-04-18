@@ -12,8 +12,8 @@ import {
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { GetUsersParamDto } from "./dtos/get-users-params.dto";
 import { PatchUserDto } from "./dtos/patch-user.dto";
-import { UsersService } from "./providers/users.service";
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { UsersService } from "./providers/users.service";
 // http:localhost:3040/users
 @Controller("users")
 @ApiTags("Users")
@@ -55,9 +55,7 @@ export class UsersController {
 
   @Post()
   public createUser(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto instanceof CreateUserDto);
-
-    return "use sent post request to users endpoint";
+    return this.userService.createUser(createUserDto);
   }
 
   // Patch

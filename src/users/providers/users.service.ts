@@ -1,33 +1,52 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from "@nestjs/common";
 import { GetUsersParamDto } from "../dtos/get-users-params.dto";
 import { AuthService } from "src/auth/provider/auth.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "../entities/user.entity";
+import { CreateUserDto } from "../dtos/create-user.dto";
+import { Repository } from "typeorm";
 
 /**
  * class to connect Users table and perform business oparation
  */
 @Injectable()
 export class UsersService {
-  /**
-   * Constructor injecting AuthService for authentication logic.
-   * @param authService - Instance of AuthService injected via forwardRef
-   */
   constructor(
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
+    /**
+     *
+     *  Injecting usersRepository
+     */
+    @InjectRepository(User)
+    private usersRespository: Repository<User>,
   ) {}
 
-  /**
-   * Method to find all Users from DB
-   */
+  public async createUser(createUserDto: CreateUserDto) {
+    //check if user exist with same email
+    const existingUser = await this.usersRespository.findOne({
+      where: { email: createUserDto.email },
+    });
+
+    //handle exception
+    if (existingUser) {
+      throw new ConflictException("User with this email already exists");
+    }
+
+    // Create and save new user
+    let newUser = this.usersRespository.create(createUserDto);
+    newUser = await this.usersRespository.save(newUser);
+    return newUser;
+  }
   public findAll(
     getUsersParamDto: GetUsersParamDto,
     limit: number,
     page: number,
   ) {
-    const isAuth = this.authService.isAuth();
-    console.log(isAuth);
-
     return [
       { firstName: "john", email: "john@gmail.com" },
       { firstName: "adewale", email: "adewale@gmail.com" },

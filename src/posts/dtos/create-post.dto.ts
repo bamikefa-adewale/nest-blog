@@ -1,4 +1,4 @@
-import { CreatePostMetaOptionDto } from "./create-post-meta0ption.dto";
+import { CreatePostMetaOptionDto } from "../../meta-option/dtos/create-post-meta0ption.dto";
 import {
   IsArray,
   IsEnum,
@@ -9,13 +9,14 @@ import {
   IsString,
   IsUrl,
   Matches,
+  MaxLength,
   MinLength,
   ValidateNested,
 } from "class-validator";
 import { postType } from "./../enums/postType.enum";
 import { Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { postStatus } from "../enums/ppostStatus.enum";
+import { postStatus } from "../enums/postStatus.enum";
 export class CreatePostDto {
   @ApiProperty({
     example: "this is title",
@@ -23,6 +24,7 @@ export class CreatePostDto {
   })
   @IsString()
   @MinLength(4)
+  @MaxLength(512)
   @IsNotEmpty()
   title: string;
 
@@ -39,10 +41,11 @@ export class CreatePostDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Matches(/^[a-z0-9]+(-[a-z0-9]+)*$/, {
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
     message:
       "A slug should use only lowercase letters and hyphens. For example: 'my-url'.",
   })
+  @MaxLength(256)
   slug: string;
 
   @ApiProperty({
@@ -76,6 +79,7 @@ export class CreatePostDto {
   })
   @IsUrl()
   @IsOptional()
+  @MaxLength(1024)
   featureImageURL?: string;
 
   @ApiPropertyOptional({
@@ -97,27 +101,30 @@ export class CreatePostDto {
   tags?: string[];
 
   @ApiPropertyOptional({
-    type: "array",
     required: false,
-    items: {
-      type: "object",
-      properties: {
-        key: {
-          type: "string",
-          description: "the key can be any key identifier meta option",
-          example: " sidebarEnabled",
-        },
-        value: {
-          type: "any",
-          description: "any value  that you want to save to the key",
-          example: " true",
-        },
-      },
-    },
+    type: [CreatePostMetaOptionDto], // Use array here
   })
   @IsOptional()
-  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreatePostMetaOptionDto)
-  metaOptions?: CreatePostMetaOptionDto[];
+  metaOptions?: CreatePostMetaOptionDto[]; // Make it an array of objects
+
+  // @ApiPropertyOptional({
+  //   required: false,
+  //   type: CreatePostMetaOptionDto,
+  //   items: {
+  //     type: "object",
+  //     properties: {
+  //       metaValue: {
+  //         type: "json",
+  //         description: "The metaValue is a JSON string",
+  //         example: '{"sidebarEnabled":tru}',
+  //       },
+  //     },
+  //   },
+  // })
+  // @IsOptional()
+  // @ValidateNested({ each: true })
+  // @Type(() => CreatePostMetaOptionDto)
+  // metaOptions?: CreatePostMetaOptionDto | null;
 }
