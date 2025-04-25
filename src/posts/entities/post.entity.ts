@@ -1,7 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
 import { postType } from "../enums/postType.enum";
 import { postStatus } from "../enums/postStatus.enum";
 import { MetaOption } from "src/meta-option/entities/meta-option.entity";
+import { User } from "src/users/entities/user.entity";
+import { Tag } from "src/tags/entities/tag.entity";
 
 @Entity()
 export class Post {
@@ -19,7 +29,7 @@ export class Post {
   })
   postType: postType;
 
-  @Column({ type: "varchar", length: 256, unique: true })
+  @Column({ type: "varchar", length: 256, unique: true, nullable: true })
   slug: string;
 
   @Column({
@@ -45,7 +55,18 @@ export class Post {
   })
   publishOn?: Date;
 
-  tags?: string[];
+  @OneToOne(() => MetaOption, (metaOption) => metaOption.post, {
+    cascade: true,
+    eager: true,
+  })
+  metaOptions?: MetaOption;
 
-  metaOptions?: MetaOption[];
+  // author for many-To-one relationship
+  @ManyToOne(() => User, (user) => user.posts, { eager: true })
+  author: User;
+
+  // tag for many-To-many relationship
+  @ManyToMany(() => Tag)
+  @JoinTable()
+  tags?: Tag[];
 }

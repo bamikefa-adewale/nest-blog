@@ -1,23 +1,21 @@
 POST http://localhost:3040/posts
 Content-Type : application/json
 {
-  "title": "How to Build a Blog with NestJS",
+  "title": "where to Build a Blog with and Deploy NestJS",
   "postType": "post",
-  "slug": "build-blog-with-nestjs",
+  "slug": "build-blog-with-nestjs1",
   "status": "draft",
   "content": "This is a comprehensive guide to building a blog using NestJS...",
   "schema": "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\"}",
   "featureImageURL": "https://example.com/images/nestjs-blog-cover.jpg",
   "publishOn": "2025-04-13T09:00:00+01:00",
-  "tags": ["nestjs", "typescript", "blog"],
-  "metaOptions": [
+  "tags": [1],
+  "metaOptions": 
     {
-      "key": "sidebarEnabled",
-      "value": true
-    },
-    {
-      "key": "readingTime",
-      "value": "5 min"
+     
+    "metaValue" : "{\"sidebarEnabled\":true, \"footerActive\": true}"
     }
-  ]
+   ,
+   "authorId": 1
+
 }

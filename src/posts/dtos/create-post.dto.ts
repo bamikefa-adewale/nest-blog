@@ -2,6 +2,7 @@ import { CreatePostMetaOptionDto } from "../../meta-option/dtos/create-post-meta
 import {
   IsArray,
   IsEnum,
+  IsInt,
   IsISO8601,
   IsJSON,
   IsNotEmpty,
@@ -91,40 +92,33 @@ export class CreatePostDto {
   publishOn?: Date;
 
   @ApiPropertyOptional({
-    description: "array of tag passes as string value",
-    example: ["nestjs", "typescript"],
+    description: "array of Id of tag  ",
+    example: [1, 2],
   })
-  @IsString({ each: true })
-  @MinLength(3, { each: true })
-  @IsArray()
   @IsOptional()
-  tags?: string[];
+  @IsInt({ each: true })
+  @IsArray()
+  tags?: number[];
 
   @ApiPropertyOptional({
-    required: false,
-    type: [CreatePostMetaOptionDto], // Use array here
+    type: CreatePostMetaOptionDto,
+    description: "Meta options object (in JSON string format)",
+    example: {
+      metaValue: '{"sidebarEnabled": true, "showBanner": false}',
+    },
   })
   @IsOptional()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => CreatePostMetaOptionDto)
-  metaOptions?: CreatePostMetaOptionDto[]; // Make it an array of objects
+  metaOptions?: CreatePostMetaOptionDto | null;
 
-  // @ApiPropertyOptional({
-  //   required: false,
-  //   type: CreatePostMetaOptionDto,
-  //   items: {
-  //     type: "object",
-  //     properties: {
-  //       metaValue: {
-  //         type: "json",
-  //         description: "The metaValue is a JSON string",
-  //         example: '{"sidebarEnabled":tru}',
-  //       },
-  //     },
-  //   },
-  // })
-  // @IsOptional()
-  // @ValidateNested({ each: true })
-  // @Type(() => CreatePostMetaOptionDto)
-  // metaOptions?: CreatePostMetaOptionDto | null;
+  @ApiProperty({
+    type: "integer",
+    required: true,
+    example: 3,
+  })
+  @IsInt()
+  @IsNotEmpty()
+  @IsOptional()
+  authorId: number;
 }

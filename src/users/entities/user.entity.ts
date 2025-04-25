@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Post } from "src/posts/entities/post.entity";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity()
 export class User {
@@ -20,7 +21,6 @@ export class User {
   @Column({ type: "varchar", length: 15, nullable: false })
   password: string;
 
-  //   // Optional: timestamps
-  //   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  //   createdAt: Date;
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
 }

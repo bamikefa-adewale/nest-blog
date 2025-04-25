@@ -5,7 +5,3 @@ export class CreatePostMetaOptionDto {
   @IsNotEmpty()
   metaValue: string;
 }
-
-// @IsObject()
-// @IsNotEmpty()
-// metaValue: Record<string, any>;

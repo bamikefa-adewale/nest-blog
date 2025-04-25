@@ -1,7 +1,14 @@
 import { CreatePostDto } from "./dtos/create-post.dto";
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Body, Controller, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { PostService } from "./provider/post.service";
 
@@ -12,6 +19,7 @@ import { PatchPostsDto } from "./dtos/patch-post.dto";
 export class PostsController {
   // injecting post service
   constructor(private readonly postService: PostService) {}
+
   // @Get("/:userId")
   // public getPosts(@Param("userId") userId: string) {
   //   return this.postService.findAll(userId);
@@ -27,6 +35,12 @@ export class PostsController {
     description: "200 response if your post is created successfully",
   })
 
+  //GET METHOD
+  @Get()
+  public getAllPosts() {
+    return this.postService.findAll();
+  }
+
   //POST METHOD
   @Post()
   public createPost(@Body() createPostDto: CreatePostDto) {
@@ -37,5 +51,11 @@ export class PostsController {
   @Patch()
   public updatePost(@Body() patchPostsDto: PatchPostsDto) {
     console.log(patchPostsDto);
+  }
+
+  // DELETE METHOD
+  @Delete()
+  public deletePost(@Query("id", ParseIntPipe) id: number) {
+    return this.postService.delete(id);
   }
 }

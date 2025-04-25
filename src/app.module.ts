@@ -1,13 +1,11 @@
-import { Module } from "@nestjs/common";
-
 import { BookmarkModule } from "./bookmark/bookmark.module";
+import { MetaOptionModule } from "./meta-option/meta-option.module";
+import { Module } from "@nestjs/common";
 import { UsersModule } from "./users/users.module";
 import { PostsModule } from "./posts/posts.module";
 import { AuthModule } from "./auth/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-
 import { TagsModule } from "./tags/tags.module";
-import { MetaOptionModule } from "./meta-option/meta-option.module";
 
 // Decorator
 @Module({
@@ -21,7 +19,6 @@ import { MetaOptionModule } from "./meta-option/meta-option.module";
       inject: [],
       useFactory: () => ({
         type: "postgres",
-        // entities: [User, Post],
         autoLoadEntities: true,
         synchronize: true,
         port: 5432,

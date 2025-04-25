@@ -1,18 +1,18 @@
-import { MetaOptionService } from "./provider/meta-option.service";
 import { CreatePostMetaOptionDto } from "./dtos/create-post-meta0ption.dto";
 import { Body, Controller, Post } from "@nestjs/common";
+import { MetaOptionService } from "./provider/meta-option.service";
 
 @Controller("meta-option")
 export class MetaOptionController {
   constructor(
     /**
-     * Injesct metaOptionService
+     * Injesct MetaOptionService
      */
-    private readonly MetaOptionService: MetaOptionService,
+    private readonly metaOptionService: MetaOptionService,
   ) {}
 
   @Post()
-  public(@Body() createPostMetaOptionDto: CreatePostMetaOptionDto) {
-    return this.MetaOptionService.create(createPostMetaOptionDto);
+  public create(@Body() createPostMetaOptionDto: CreatePostMetaOptionDto) {
+    return this.metaOptionService.create(createPostMetaOptionDto);
   }
 }

@@ -1,43 +1,11 @@
-// import { Repository } from "typeorm";
-// import { Post } from "../entities/post.entity";
-// import { InjectRepository } from "@nestjs/typeorm";
-// import { ConflictException } from "@nestjs/common";
-// import { CreatePostDto } from "../dtos/create-post.dto";
-
-// export class PostService {
-//   constructor(
-//     /**
-//      *
-//      *  Injecting postsRepository
-//      */
-//     @InjectRepository(Post)
-//     private postRepository: Repository<Post>,
-//   ) {}
-
-//   public async createPost(createPostDto: CreatePostDto) {
-//     // Checking existing post in a DB
-//     const existingPost = await this.postRepository.findOne({
-//       where: { slug: createPostDto.slug },
-//     });
-
-//     if (existingPost) {
-//       throw new ConflictException("A post with this slug already exists.");
-//     }
-
-//     // Creating new Post
-//     let newPost = this.postRepository.create(createPostDto);
-//     newPost = await this.postRepository.save(newPost);
-//     return newPost;
-//   }
-// }
-
 import { UsersService } from "../../users/providers/users.service";
-import { Body, Injectable } from "@nestjs/common";
+import { Body, Injectable, NotFoundException } from "@nestjs/common";
 import { Post } from "../entities/post.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreatePostDto } from "../dtos/create-post.dto";
 import { MetaOption } from "src/meta-option/entities/meta-option.entity";
+import { TagsService } from "src/tags/providers/tags.service";
 
 @Injectable()
 export class PostService {
@@ -48,6 +16,7 @@ export class PostService {
     /**
      * Inject metaOptionRepository
      */
+
     @InjectRepository(MetaOption)
     private readonly metaOptionRepository: Repository<MetaOption>,
     /**
@@ -55,42 +24,60 @@ export class PostService {
      */
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+    /**
+     * Inject tagsService
+     */
+
+    private readonly tagsService: TagsService,
   ) {}
 
   /**
    *Creating New Post
    */
   public async create(@Body() createPostDto: CreatePostDto) {
-    //CREATINGS metaOption
+    // Find the author based on authorId
+    const author = await this.usersService.findOneById(createPostDto.authorId);
+    if (!author) {
+      throw new NotFoundException("Author with given ID not found");
+    }
 
-    const metaOption = createPostDto.metaOptions
+    // Check if tags exist in the DB
+    const tagEntities = createPostDto.tags?.length
+      ? await this.tagsService.findMultipleTags(createPostDto.tags)
+      : [];
+
+    // Handle metaOptions if provided
+    const meta = createPostDto.metaOptions
       ? this.metaOptionRepository.create(createPostDto.metaOptions)
       : null;
 
-    if (metaOption) {
-      return await this.metaOptionRepository.save(metaOption);
+    // Check if metaOptions was found and is valid
+    if (!meta) {
+      throw new NotFoundException("Meta options not found");
     }
 
-    //CREATING post
-    // const post = this.postRepository.create(createPostDto);
-    const newPost = this.postRepository.create(createPostDto);
+    // Create the new post with author, tags, and metaOptions
+    const newPost = this.postRepository.create({
+      ...createPostDto,
+      author: author, // Use authorId if that's what your Post entity expects
+      tags: tagEntities,
+      metaOptions: meta,
+    });
 
-    //ADD metaOption to post
-    if (metaOption) {
-      newPost.metaOptions = metaOption;
-    }
-    //Return the post to user
+    // Save the new post
     return this.postRepository.save(newPost);
   }
 
-  public findAll(userId: string) {
-    //User Service
-    //Find A User
-    const user = this.usersService.findOneById(userId);
+  public async findAll() {
+    const post = await this.postRepository.find();
+    return post;
+  }
 
-    return [
-      { user: user, title: "test title", content: "text context" },
-      { user: user, title: "test title 2", content: "text context 2" },
-    ];
+  //Deleting Post
+  public async delete(id: number) {
+    //Deleting the post
+    await this.postRepository.delete(id);
+
+    return { deleted: true, id };
   }
 }
