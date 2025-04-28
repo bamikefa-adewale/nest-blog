@@ -50,12 +50,12 @@ export class PostsController {
   //PATCH METHOD
   @Patch()
   public updatePost(@Body() patchPostsDto: PatchPostsDto) {
-    console.log(patchPostsDto);
+    return this.postService.update(patchPostsDto);
   }
 
   // DELETE METHOD
   @Delete()
-  public deletePost(@Query("id", ParseIntPipe) id: number) {
-    return this.postService.delete(id);
+  public async deletePost(@Query("id", ParseIntPipe) id: number) {
+    return await this.postService.delete(id);
   }
 }

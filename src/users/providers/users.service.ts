@@ -1,16 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  ConflictException,
-  forwardRef,
-  Inject,
-  Injectable,
-} from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { GetUsersParamDto } from "../dtos/get-users-params.dto";
-import { AuthService } from "src/auth/provider/auth.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../entities/user.entity";
 import { CreateUserDto } from "../dtos/create-user.dto";
 import { Repository } from "typeorm";
+import { ConfigService } from "@nestjs/config";
 
 /**
  * class to connect Users table and perform business oparation
@@ -18,6 +13,12 @@ import { Repository } from "typeorm";
 @Injectable()
 export class UsersService {
   constructor(
+    /**
+     *
+     *  Injecting configService
+     */
+
+    private readonly configService: ConfigService,
     /**
      *
      *  Injecting usersRepository
@@ -47,6 +48,9 @@ export class UsersService {
     limit: number,
     page: number,
   ) {
+    const envronment = this.configService.get<string>("S3_BUCKET");
+    console.log(envronment);
+
     return [
       { firstName: "john", email: "john@gmail.com" },
       { firstName: "adewale", email: "adewale@gmail.com" },

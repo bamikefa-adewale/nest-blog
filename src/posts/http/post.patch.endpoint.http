@@ -1,6 +1,15 @@
 PATCH http://localhost:3040/posts
 Content-Type :application/json
+
 {
-        "id": 2344,
-        "postTypes" : "scdc"
-}     
+  "id": 3,
+  "title": "Where to Build a Blog with and Deploy NestJS",
+  "postType": "post",
+  "slug": "build-blog-with-nestjs-with-typescript",
+  "status": "draft",
+  "content": "This is a comprehensive guide to building a blog using NestJS...",
+  "tags": [1, 7],
+  "metaOptions": {
+    "metaValue": "{\"sidebarEnabled\":true, \"footerActive\": true}"
+  }
+}
