@@ -5,11 +5,13 @@ import { AuthModule } from "src/auth/auth.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { ConfigModule } from "@nestjs/config";
+
 import profileConfig from "./config/profile.config";
+import { UsersCreateManyProvider } from "./providers/users-many.provider";
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, UsersCreateManyProvider],
   exports: [UsersService],
   imports: [
     forwardRef(() => AuthModule),

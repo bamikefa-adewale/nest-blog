@@ -11,3 +11,23 @@ Content-Type: application/json
 }
 
 
+POST http://localhost:3040/users/create-many
+Content-Type: application/json
+{
+  "users": [
+    {
+      "firstName": "Amin",
+      "lastName": "Yusu",
+      "age": 30,
+      "email": "ami@mail.com",
+      "password": "StPass123!"
+    },
+    {
+      "firstName": "Emeka",
+      "lastName": "Ibeka",
+      "age": 28,
+      "email": "emeka@mail.com",
+      "password": "EmPass456@"
+    }
+  ]
+}

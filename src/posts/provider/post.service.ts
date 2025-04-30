@@ -1,12 +1,19 @@
 import { PatchPostsDto } from "./../dtos/patch-post.dto";
 import { UsersService } from "../../users/providers/users.service";
-import { Body, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Injectable,
+  NotFoundException,
+  RequestTimeoutException,
+} from "@nestjs/common";
 import { Post } from "../entities/post.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreatePostDto } from "../dtos/create-post.dto";
 import { MetaOption } from "src/meta-option/entities/meta-option.entity";
 import { TagsService } from "src/tags/providers/tags.service";
+import { Tag } from "src/tags/entities/tag.entity";
 
 @Injectable()
 export class PostService {
@@ -76,20 +83,53 @@ export class PostService {
   }
 
   public async update(patchPostsDto: PatchPostsDto) {
+    // Find tags (findTag)
+    let findTag: Tag[];
+    try {
+      findTag = await this.tagsService.findMultipleTags(
+        patchPostsDto.tags ?? [],
+      );
+    } catch (error) {
+      console.error("Database query error:", error);
+      throw new RequestTimeoutException(
+        "Unable to process your request at the moment pleace try later ",
+        {
+          description: "Error connecting to the database",
+        },
+      );
+    }
+
+    /**
+     * number of tag need to equal
+     */
+    if (!findTag || findTag.length !== patchPostsDto.tags?.length) {
+      throw new BadRequestException(
+        "Please check your tag IDs and ensure they are correct",
+      );
+    }
+
     // Find the post by ID (findPost)
-    const findPost = await this.postRepository.findOneBy({
-      id: patchPostsDto.id,
-    });
+    let findPost: Post | null;
+    try {
+      findPost = await this.postRepository.findOneBy({
+        id: patchPostsDto.id,
+      });
+    } catch (error) {
+      console.error("Database query error:", error);
+      throw new RequestTimeoutException(
+        "Unable to process your request at the moment pleace try later ",
+        {
+          description: "Error connecting to the database",
+        },
+      );
+    }
 
     // If no post is found, throw an error
     if (!findPost) {
-      throw new NotFoundException(`Post with ID ${patchPostsDto.id} not found`);
+      throw new BadRequestException(
+        `Post with ID ${patchPostsDto.id} not found`,
+      );
     }
-
-    // Find tags (findTag)
-    const findTag = await this.tagsService.findMultipleTags(
-      patchPostsDto.tags ?? [],
-    );
 
     // Update properties of the post found in db
     findPost.title = patchPostsDto.title ?? findPost.title;
@@ -105,7 +145,14 @@ export class PostService {
     findPost.tags = findTag;
 
     // Save and return the updated post
-    return await this.postRepository.save(findPost);
+    try {
+      await this.postRepository.save(findPost);
+    } catch (error) {
+      console.error("Database query error:", error);
+
+      throw new RequestTimeoutException("unable to process");
+    }
+    return findPost;
   }
 
   //Deleting Post
