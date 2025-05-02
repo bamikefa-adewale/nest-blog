@@ -18,9 +18,11 @@ export class User {
   @Column({ type: "varchar", length: 15, nullable: false, unique: true })
   email: string;
 
-  @Column({ type: "varchar", length: 15, nullable: false })
+  @Column({ type: "varchar", length: 225, nullable: true }) // temporarily
   password: string;
 
-  @OneToMany(() => Post, (post) => post.author)
+  @OneToMany(() => Post, (post) => post.author, {
+    onDelete: "CASCADE",
+  })
   posts: Post[];
 }

@@ -3,7 +3,7 @@ Content-Type : application/json
 {
   "title": "where to Build a Blog with and Deploy NestJS",
   "postType": "post",
-  "slug": "build-blog-with-nestjs-6",
+  "slug": "build-blog-with-nestjs-9",
   "status": "draft",
   "content": "This is a comprehensive guide to building a blog using NestJS...",
   "schema": "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\"}",

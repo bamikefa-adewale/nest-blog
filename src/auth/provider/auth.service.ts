@@ -1,19 +1,21 @@
-import { Injectable, Inject, forwardRef } from "@nestjs/common";
-import { UsersService } from "src/users/providers/users.service";
+import { SignInProvider } from "./sign-in.provider";
+import { SignInDto } from "./../dtos/sign-in.dto";
+import { Injectable } from "@nestjs/common";
+// import { UsersService } from "src/users/providers/users.service";
 
 @Injectable()
 export class AuthService {
   constructor(
-    //Injecting user USERservice
-    @Inject(forwardRef(() => UsersService))
-    private readonly userSerive: UsersService,
+    // //Injecting user UsersService
+    // @Inject(forwardRef(() => UsersService))
+    // private readonly userSerive: UsersService,
+
+    //Injecting user UsersService
+    private readonly signInProvider: SignInProvider,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public login(email: string, password: string, id: string) {
-    const user = this.userSerive.findOneById(2832);
-    console.log(user);
-    return "SAMPLE_TOKEN";
+  public async signIn(signInDto: SignInDto) {
+    return await this.signInProvider.signIn(signInDto);
   }
 
   public isAuth() {

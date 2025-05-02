@@ -1,0 +1,7 @@
+POST http://localhost:3040/auth/sign-in
+Content-Type: application/json
+
+{
+    "email": "emeka@mail.com",
+    "password":"EmPass456@"
+}

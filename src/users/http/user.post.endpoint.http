@@ -3,13 +3,12 @@ Content-Type: application/json
 
 
 {
-  "firstName": "Chinedu",
-  "lastName": "Okafor",
-  "age": 25,
-  "email": "oka@gmail.com",
-  "password": "SecurePass456@"
-}
-
+    "firstName": "Emeka",
+      "lastName": "Ibeka",
+      "age": 28,
+      "email": "emeka@mail.com",
+      "password": "EmPass456@"
+ }
 
 POST http://localhost:3040/users/create-many
 Content-Type: application/json

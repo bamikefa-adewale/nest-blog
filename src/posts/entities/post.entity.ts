@@ -62,7 +62,7 @@ export class Post {
   metaOptions?: MetaOption;
 
   // author for many-To-one relationship
-  @ManyToOne(() => User, (user) => user.posts, { eager: true })
+  @ManyToOne(() => User, (user) => user.posts, { cascade: true, eager: true })
   author: User;
 
   // tag for many-To-many relationship

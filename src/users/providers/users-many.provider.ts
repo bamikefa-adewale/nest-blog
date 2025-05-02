@@ -39,7 +39,6 @@ export class UsersCreateManyProvider {
       for (const user of createManyUsersDto.users) {
         const newUser = queryRunner.manager.create(User, user);
         const result = await queryRunner.manager.save(newUser);
-        console.log("Saved user:", result);
         newUsers.push(result);
       }
       //if successful commit
