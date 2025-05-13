@@ -8,6 +8,8 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Patch,
+  UseGuards,
+  SetMetadata,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { GetUsersParamDto } from "./dtos/get-users-params.dto";
@@ -15,6 +17,9 @@ import { PatchUserDto } from "./dtos/patch-user.dto";
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UsersService } from "./providers/users.service";
 import { CreateManyUsersDto } from "./dtos/create-many-users.dto";
+import { AccessTokenGuard } from "src/auth/guard/access-token/access-token.guard";
+import { AuthTypes } from "src/auth/enums/auth-types.enums";
+import { Auth } from "src/auth/decorators/auth.decorator";
 // http:localhost:3040/users
 @Controller("users")
 @ApiTags("Users")
@@ -55,10 +60,13 @@ export class UsersController {
   }
 
   @Post()
+  // @SetMetadata("authType", "none")
+  @Auth( AuthTypes.None)
   public createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
 
+  // @UseGuards(AccessTokenGuard)
   @Post("create-many")
   public createManyUser(@Body() createManyUsersDto: CreateManyUsersDto) {
     return this.userService.createMany(createManyUsersDto);

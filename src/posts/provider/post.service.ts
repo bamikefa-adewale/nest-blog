@@ -1,3 +1,4 @@
+import { CreatePostProvider } from "./create-post.provider";
 import { PatchPostsDto } from "./../dtos/patch-post.dto";
 import { UsersService } from "../../users/providers/users.service";
 import {
@@ -17,6 +18,7 @@ import { Tag } from "src/tags/entities/tag.entity";
 import { GetPostsDto } from "../dtos/get-post.dto";
 import { PaginationProvider } from "src/common/pagination/providers/pagination.provider";
 import { Paginated } from "src/common/pagination/interfaces/paginated.interface";
+import { ActiveUserData } from "src/auth/interfaces/active-user.interface";
 
 @Injectable()
 export class PostService {
@@ -45,50 +47,54 @@ export class PostService {
      * Inject PaginationProvider
      */
     private readonly paginationProvider: PaginationProvider,
+    private readonly reatePostProvider: CreatePostProvider,
   ) {}
 
   /**
    *Creating New Post
    */
-  public async create(@Body() createPostDto: CreatePostDto) {
-    // Find the author based on authorId
-    const author = await this.usersService.findOneById(createPostDto.authorId);
-    if (!author) {
-      throw new NotFoundException("Author with given ID not found");
-    }
-
-    // Check if tags exist in the DB
-    const tagEntities = createPostDto.tags?.length
-      ? await this.tagsService.findMultipleTags(createPostDto.tags)
-      : [];
-
-    // Handle metaOptions if provided
-    const meta = createPostDto.metaOptions
-      ? this.metaOptionRepository.create(createPostDto.metaOptions)
-      : null;
-
-    // Check if metaOptions was found and is valid
-    if (!meta) {
-      throw new NotFoundException("Meta options not found");
-    }
-
-    // Create the new post with author, tags, and metaOptions
-    const newPost = this.postRepository.create({
-      ...createPostDto,
-      author: author,
-      tags: tagEntities,
-      metaOptions: meta,
-    });
-
-    // Save the new post
-    return this.postRepository.save(newPost);
+  public async create(user: ActiveUserData, createPostDto: CreatePostDto) {
+    return await this.reatePostProvider.create(user, createPostDto);
   }
+
+  // public async create(@Body() createPostDto: CreatePostDto) {
+  //   // Find the author based on authorId
+  //   const author = await this.usersService.findOneById(createPostDto.authorId);
+  //   if (!author) {
+  //     throw new NotFoundException("Author with given ID not found");
+  //   }
+
+  //   // Check if tags exist in the DB
+  //   const tagEntities = createPostDto.tags?.length
+  //     ? await this.tagsService.findMultipleTags(createPostDto.tags)
+  //     : [];
+
+  //   // Handle metaOptions if provided
+  //   const meta = createPostDto.metaOptions
+  //     ? this.metaOptionRepository.create(createPostDto.metaOptions)
+  //     : null;
+
+  //   // Check if metaOptions was found and is valid
+  //   if (!meta) {
+  //     throw new NotFoundException("Meta options not found");
+  //   }
+
+  //   // Create the new post with author, tags, and metaOptions
+  //   const newPost = this.postRepository.create({
+  //     ...createPostDto,
+  //     author: author,
+  //     tags: tagEntities,
+  //     metaOptions: meta,
+  //   });
+
+  //   // Save the new post
+  //   return this.postRepository.save(newPost);
+  // }
 
   // find all post(everything lating to post )
 
   public async findAll(
     postQuery: GetPostsDto,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId?: string,
   ): Promise<Paginated<Post>> {
     const posts = await this.paginationProvider.paginateQuery(
@@ -102,6 +108,7 @@ export class PostService {
     return posts;
   }
 
+  //Updating POST
   public async update(patchPostsDto: PatchPostsDto) {
     // Find tags (findTag)
     let findTag: Tag[];

@@ -9,21 +9,19 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 
+import { GenerateTokenProvider } from "./generate-token.provider";
+
 @Injectable()
 export class SignInProvider {
   constructor(
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
-
-    /**
-     * Injecting HashingProvider
-     */
     private readonly hashingProvider: HashingProvider,
+    private readonly generateTokenProvider: GenerateTokenProvider,
   ) {}
 
   public async signIn(signInDto: SignInDto) {
     //Find the user using email ID
-    //Throw an exception user not found
     const user = await this.usersService.FindOneByEmail(signInDto.email);
 
     //compare password to the hash
@@ -34,6 +32,7 @@ export class SignInProvider {
         signInDto.password,
         user.password,
       );
+      //Throw an exception user not found
     } catch (error) {
       throw new RequestTimeoutException(error, {
         description: "could not compare passwords",
@@ -43,8 +42,23 @@ export class SignInProvider {
     if (!isEqual) {
       throw new UnauthorizedException("incorrect password");
     }
-    //send confirmation
 
-    return true;
+    // //return jwt token
+    return this.generateTokenProvider.generateToken(user);
+
+    // const accessToken = await this.jwtService.signAsync(
+    //   {
+    //     sub: user.id,
+    //     email: user.email,
+    //   } as ActiveUserData,
+    //   //signing options
+    //   {
+    //     audience: this.jwtConfiguration.audience,
+    //     issuer: this.jwtConfiguration.issuer,
+    //     secret: this.jwtConfiguration.secret,
+    //     expiresIn: this.jwtConfiguration.accessTokenTtl,
+    //   },
+    // );
+    // return accessToken;
   }
 }

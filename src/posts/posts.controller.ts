@@ -1,3 +1,4 @@
+import { REQUEST_USER_KEY } from "src/auth/constants/auth.constsnts";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import {
   Body,
@@ -9,12 +10,16 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { PostService } from "./provider/post.service";
 
 import { PatchPostsDto } from "./dtos/patch-post.dto";
 import { GetPostsDto } from "./dtos/get-post.dto";
+import { request } from "http";
+import { ActivetUser } from "src/auth/decorators/active-user.decorator";
+import { ActiveUserData } from "src/auth/interfaces/active-user.interface";
 
 @Controller("posts")
 @ApiTags("Posts")
@@ -49,8 +54,11 @@ export class PostsController {
 
   //POST METHOD
   @Post()
-  public createPost(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  public createPost(
+    @Body() createPostDto: CreatePostDto,
+    @ActivetUser() user: ActiveUserData,
+  ) {
+    console.log(user)
   }
 
   //PATCH METHOD

@@ -121,6 +121,10 @@ export class UsersService {
     return await this.userCreateManyProvider.createMany(createManyUsersDto);
   }
 
+  /**
+   * Sign-In existing Email
+   */
+
   public async FindOneByEmail(email: string) {
     return await this.findOneUserByEmailProvider.findOneByEmail(email);
   }

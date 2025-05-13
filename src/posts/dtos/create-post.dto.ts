@@ -88,7 +88,6 @@ export class CreatePostDto {
     example: "2025-04-13T09:00:00+01:00",
   })
   @IsOptional()
-  @IsISO8601()
   publishOn?: Date;
 
   @ApiPropertyOptional({
@@ -112,13 +111,14 @@ export class CreatePostDto {
   @Type(() => CreatePostMetaOptionDto)
   metaOptions?: CreatePostMetaOptionDto | null;
 
-  @ApiProperty({
-    type: "integer",
-    required: true,
-    example: 3,
-  })
-  @IsInt()
-  @IsNotEmpty()
-  @IsOptional()
-  authorId: number;
+  // note: The following property is commented out because it is not used in the current implementation activeUserData
+  // @ApiProperty({
+  //   type: "integer",
+  //   required: true,
+  //   example: 3,
+  // })
+  // @IsInt()
+  // @IsNotEmpty()
+  // @IsOptional()
+  // authorId: number;
 }

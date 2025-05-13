@@ -1,9 +1,10 @@
 POST http://localhost:3040/posts
 Content-Type : application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjksImVtYWlsIjoiZW1la2FAbWFpbC5jb20iLCJpYXQiOjE3NDcwOTg2NjUsImV4cCI6MTc0NzEwMjI2NSwiYXVkIjoibG9jYWxob3N0OjMwNDAiLCJpc3MiOiJsb2NhbGhvc3Q6MzA0MCJ9.7hvD1O6iI1X0VuX0t-ihlFMUZ36t1Tp2jKSma30dczM
 {
-  "title": "where to Build a Blog with and Deploy NestJS",
+  "title": "where to Build a Blog with and Deploy NestJS4",
   "postType": "post",
-  "slug": "build-blog-with-nestjs-9",
+  "slug": "build-blog-with-nestjs-4",
   "status": "draft",
   "content": "This is a comprehensive guide to building a blog using NestJS...",
   "schema": "{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\"}",
